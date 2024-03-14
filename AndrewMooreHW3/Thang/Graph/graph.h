@@ -1,4 +1,7 @@
+#pragma once
 #include <vector>
+
+class Edge;
 
 class Vertex {
     private:
@@ -28,7 +31,7 @@ class Edge {
 
 class Graph {
     private:
-        int vertices = 0;
+        int num_of_verts = 0;
         std::vector<Vertex*> vertices;
     public:
         Graph();

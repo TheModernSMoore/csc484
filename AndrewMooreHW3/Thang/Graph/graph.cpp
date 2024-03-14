@@ -2,7 +2,7 @@
 
 // Vertex implementation
 
-Vetex::Vertex(int numb) {
+Vertex::Vertex(int numb) {
     number = numb;
 }
 
@@ -20,7 +20,7 @@ bool Vertex::addOutgoingEdge(Edge *edge) {
 
 // Edge implementation
 
-Edge::Edge(Vertex *from, Vertex *to, float edgeWeight = 1) {
+Edge::Edge(Vertex *from, Vertex *to, float edgeWeight) {
     fromVert = from;
     toVert = to;
     weight = edgeWeight;
@@ -44,10 +44,11 @@ float Edge::getWeight() {
 Graph::Graph() {}
 
 bool Graph::addVertex() {
-    vertices.push_back(new Vertex(vertices++));
+    vertices.push_back(new Vertex(num_of_verts++));
+    return true;
 }
 
-bool Graph::addEdge(Vertex *from, Vertex *to, float weight = 1) {
+bool Graph::addEdge(Vertex *from, Vertex *to, float weight) {
     if (from == nullptr || to == nullptr) {
         return false;
     }
@@ -55,10 +56,10 @@ bool Graph::addEdge(Vertex *from, Vertex *to, float weight = 1) {
     return true;
 }
 
-std::vector<Edge*> getOutgoingEdges(Vertex *from) {
-    return from.getOutgoingEdges();
+std::vector<Edge*> Graph::getOutgoingEdges(Vertex *from) {
+    return from->getOutgoingEdges();
 }
 
-std::vector<Vertex*> getGraphVertices() {
+std::vector<Vertex*> Graph::getGraphVertices() {
     return vertices;
 }
