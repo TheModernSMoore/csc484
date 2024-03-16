@@ -18,6 +18,10 @@ bool Vertex::addOutgoingEdge(Edge *edge) {
     return true;
 }
 
+int Vertex::getID() {
+    return number;
+}
+
 // Edge implementation
 
 Edge::Edge(Vertex *from, Vertex *to, float edgeWeight) {
@@ -54,6 +58,18 @@ bool Graph::addEdge(Vertex *from, Vertex *to, float weight) {
     }
     new Edge(from, to, weight);
     return true;
+}
+
+bool Graph::addEdge(int from, int to, float weight) {
+    new Edge(getVertex(from), getVertex(to), weight);
+    return true;
+}
+
+Vertex* Graph::getVertex(int idx) {
+    if (idx >= vertices.size() || idx < 0) {
+        return nullptr;
+    }
+    return vertices[idx];
 }
 
 std::vector<Edge*> Graph::getOutgoingEdges(Vertex *from) {

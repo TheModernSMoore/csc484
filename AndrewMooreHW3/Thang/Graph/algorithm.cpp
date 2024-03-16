@@ -1,5 +1,6 @@
 #include "algorithm.h"
 #include <limits>
+#include <iostream>
 
 // Path-finding algorithm implementaion
 
@@ -122,7 +123,7 @@ std::vector<Edge*> pathfindDijkstra(Graph *graph, Vertex *start, Vertex *end) {
         }
 
         // We've finished looking at the connections for the current
-        // node, so add it to the closed list and remove it fomr the
+        // node, so add it to the closed list and remove it from the
         // open list
         open.removeFromList(current);
         closed.addToList(current);
@@ -137,10 +138,9 @@ std::vector<Edge*> pathfindDijkstra(Graph *graph, Vertex *start, Vertex *end) {
         std::vector<Edge*> reverse_path;
 
         // Work back along the path, accumulating connections.
-        Vertex *current_vert = current.vertex;
-        while (current_vert != start) {
+        while (current.vertex != start) {
             reverse_path.push_back(current.edge);
-            current_vert = current.edge->getFrom();
+            current = closed.find(current.edge->getFrom());
         }
 
         std::vector<Edge*> path;
@@ -149,7 +149,6 @@ std::vector<Edge*> pathfindDijkstra(Graph *graph, Vertex *start, Vertex *end) {
         for (int i = reverse_path.size() - 1; i >= 0; i--) {
             path.push_back(reverse_path[i]);
         }
-
         return path;
     }
 }
@@ -338,10 +337,9 @@ std::vector<Edge*> pathfindAStar(Graph *graph, Vertex *start, Vertex *end, Heuri
         std::vector<Edge*> reverse_path;
 
         // Work back along the path, accumulating edges.
-        Vertex *current_vert = current.vertex;
-        while (current_vert != start) {
+        while (current.vertex != start) {
             reverse_path.push_back(current.edge);
-            current_vert = current.edge->getFrom();
+            current = closed.find(current.edge->getFrom());
         }
 
         std::vector<Edge*> path;

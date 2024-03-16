@@ -12,6 +12,7 @@ class Vertex {
         Vertex(int numb);
         std::vector<Edge*> getOutgoingEdges();
         bool addOutgoingEdge(Edge *edge);
+        int getID();
 };
 
 class Edge {
@@ -37,6 +38,8 @@ class Graph {
         Graph();
         bool addVertex();
         bool addEdge(Vertex *from, Vertex *to, float weight = 1);
+        bool addEdge(int from, int to, float weight = 1);
+        Vertex* getVertex(int idx);
         std::vector<Edge*> getOutgoingEdges(Vertex *from);
         std::vector<Vertex*> getGraphVertices();
 

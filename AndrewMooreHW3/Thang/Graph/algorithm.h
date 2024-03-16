@@ -30,6 +30,8 @@ class PathfindingList {
         VertexRecord smallestElement();
 };
 
+std::vector<Edge*> pathfindDijkstra(Graph *graph, Vertex *start, Vertex *end);
+
 
 // A* structures
 
@@ -71,3 +73,5 @@ class Heuristic {
         // Any two nodes
         virtual float estimate(Vertex *fromVert, Vertex *toVert) = 0;
 };
+
+std::vector<Edge*> pathfindAStar(Graph *graph, Vertex *start, Vertex *end, Heuristic *heuristic);
