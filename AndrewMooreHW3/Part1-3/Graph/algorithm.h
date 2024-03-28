@@ -74,4 +74,16 @@ class Heuristic {
         virtual float estimate(Vertex *fromVert, Vertex *toVert) = 0;
 };
 
+class EuclideanHeuristic : public Heuristic {
+    public:
+        EuclideanHeuristic(Vertex *goal);
+        virtual float estimate(Vertex *fromVert, Vertex *toVert);
+};
+
+class ManhattanHeuristic : public Heuristic {
+    public:
+        ManhattanHeuristic(Vertex *goal);
+        virtual float estimate(Vertex *fromVert, Vertex *toVert);
+};
+
 std::vector<Edge*> pathfindAStar(Graph *graph, Vertex *start, Vertex *end, Heuristic *heuristic);

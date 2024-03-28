@@ -1,4 +1,5 @@
 #include "algorithm.h"
+#include "../Vector/vecStuff.h"
 #include <limits>
 #include <iostream>
 
@@ -165,6 +166,22 @@ float Heuristic::estimate(Vertex *fromVert) {
     return estimate(fromVert, goalVert);
 }
 
+EuclideanHeuristic::EuclideanHeuristic(Vertex *goal) : Heuristic(goal) {}
+
+float EuclideanHeuristic::estimate(Vertex *fromVert, Vertex *toVert) {
+    return length(toVert->getPos() - fromVert->getPos());
+}
+
+ManhattanHeuristic::ManhattanHeuristic(Vertex *goal) : Heuristic(goal) {}
+
+float ManhattanHeuristic::estimate(Vertex *fromVert, Vertex *toVert) {
+    float x = abs(toVert->getPos().x - fromVert->getPos().x);
+    float y = abs(toVert->getPos().y - fromVert->getPos().y);
+    return x + y;
+}
+
+// Vertex Record star
+
 bool VertexRecordStar::operator==(VertexRecordStar other) {
     if (vertex == other.vertex &&
         edge == other.edge &&
@@ -174,6 +191,8 @@ bool VertexRecordStar::operator==(VertexRecordStar other) {
     }
     return false;
 }
+
+// Astar pathfinding list
 
 PathfindingListStar::PathfindingListStar() {}
 
