@@ -25,13 +25,13 @@ class Arrive : public SteeringBehavior {
         Kinematic character;
         Kinematic target;
 
-        float maxAccel = 500;
-        float maxSpeed = 75;
+        float maxAccel = 100;
+        float maxSpeed = 25;
 
-        float targetRadius = 25;
-        float slowRadius = 300;
+        float targetRadius = 3;
+        float slowRadius = 5;
 
-        float timeToTarget = 2;
+        float timeToTarget = 0.1;
     public:
         Arrive(Kinematic character, Kinematic target);
         SteeringData getSteering();

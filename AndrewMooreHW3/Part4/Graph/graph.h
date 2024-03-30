@@ -75,6 +75,8 @@ class WorldGraph : public Graph {
         WorldGraph(sf::Vector2f screen_size, sf::Vector2f vertex_size, std::vector<sf::Shape*> worldObjects);
         WorldVertex* quantizePosition(sf::Vector2f position);
         virtual bool addVertex(sf::Vector2f pos, sf::Vector2f size);
+        virtual bool addEdge(Vertex *from, Vertex *to);
+        virtual bool addEdge(int from, int to);
         WorldVertex* getWorldVertex(int idx);
         std::vector<WorldVertex*> getWorldGraphVertices();
 };

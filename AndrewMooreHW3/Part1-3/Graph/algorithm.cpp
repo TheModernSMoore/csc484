@@ -17,7 +17,11 @@ bool VertexRecord::operator==(VertexRecord other) {
 PathfindingList::PathfindingList() {}
 
 void PathfindingList::addToList(VertexRecord record) {
-    list.push_back(record);
+    auto it = list.begin();
+    while (it != list.end() && record.weightSoFar > it->weightSoFar) {
+        it++;
+    }
+    list.insert(it, record);
 }
 
 void PathfindingList::removeFromList(VertexRecord record) {
@@ -197,7 +201,11 @@ bool VertexRecordStar::operator==(VertexRecordStar other) {
 PathfindingListStar::PathfindingListStar() {}
 
 void PathfindingListStar::addToList(VertexRecordStar record) {
-    list.push_back(record);
+    auto it = list.begin();
+    while (it != list.end() && record.estimatedTotalWeight > it->estimatedTotalWeight) {
+        it++;
+    }
+    list.insert(it, record);
 }
 
 void PathfindingListStar::removeFromList(VertexRecordStar record) {

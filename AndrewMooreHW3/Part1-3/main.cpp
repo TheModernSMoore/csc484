@@ -16,6 +16,10 @@ int main(int argc, char const *argv[])
 {
     Graph hyrule;
 
+    // Clock to gather elapsed time
+    sf::Clock time;
+    time.restart();
+
     // Hand making this graph :(
     
     hyrule.addVertex(sf::Vector2f(-3621, 1800));
@@ -117,14 +121,38 @@ int main(int argc, char const *argv[])
     hyrule.addEdge(22, 18);
     hyrule.addEdge(22, 21);
 
-    printPath(pathfindDijkstra(&hyrule, hyrule.getVertex(0), hyrule.getVertex(15)));
+    // Get the elapsed_time since the last frame
+    float graph_time;
 
+    time.restart().asSeconds();
+    printPath(pathfindDijkstra(&hyrule, hyrule.getVertex(0), hyrule.getVertex(15)));
+    graph_time = time.restart().asSeconds();
+    std::cout << "Small Dijkstra = " << graph_time << std::endl << std::endl;
+    
+    time.restart().asSeconds();
     printPath(pathfindAStar(&hyrule, hyrule.getVertex(0), hyrule.getVertex(15), new EuclideanHeuristic(hyrule.getVertex(15))));
+    graph_time = time.restart().asSeconds();
+    std::cout << "Small AStar Euclidean = " << graph_time << std::endl << std::endl;
+
+    time.restart().asSeconds();
     printPath(pathfindAStar(&hyrule, hyrule.getVertex(0), hyrule.getVertex(15), new ManhattanHeuristic(hyrule.getVertex(15))));
+    graph_time = time.restart().asSeconds();
+    std::cout << "Small AStar Manhattan = " << graph_time << std::endl << std::endl;
 
     Graph bigGraph(100000, 500000);
-    printPath(pathfindDijkstra(&bigGraph, bigGraph.getVertex(0), bigGraph.getVertex(2568)));
 
+    time.restart().asSeconds();
+    printPath(pathfindDijkstra(&bigGraph, bigGraph.getVertex(0), bigGraph.getVertex(2568)));
+    graph_time = time.restart().asSeconds();
+    std::cout << "Big Dijkstra = " << graph_time << std::endl << std::endl;
+
+    time.restart().asSeconds();
     printPath(pathfindAStar(&bigGraph, bigGraph.getVertex(0), bigGraph.getVertex(2568), new EuclideanHeuristic(bigGraph.getVertex(2568))));
+    graph_time = time.restart().asSeconds();
+    std::cout << "Big AStar Euclidean = " << graph_time << std::endl << std::endl;
+
+    time.restart().asSeconds();
     printPath(pathfindAStar(&bigGraph, bigGraph.getVertex(0), bigGraph.getVertex(2568), new ManhattanHeuristic(bigGraph.getVertex(2568))));
+    graph_time = time.restart().asSeconds();
+    std::cout << "Small AStar Manhattan = " << graph_time << std::endl << std::endl;
 }

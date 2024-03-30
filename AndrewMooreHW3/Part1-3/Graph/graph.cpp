@@ -175,6 +175,18 @@ WorldGraph::WorldGraph(sf::Vector2f screen_size, sf::Vector2f vertex_size, std::
     }
 }
 
+bool WorldGraph::addEdge(Vertex *from, Vertex *to) {
+    if (from == nullptr || to == nullptr) {
+        return false;
+    }
+    new Edge(from, to, length(from->getPos() - to->getPos()));
+    return true;
+}
+
+bool WorldGraph::addEdge(int from, int to) {
+    return addEdge(getWorldVertex(from), getWorldVertex(to));
+}
+
 WorldVertex* WorldGraph::getWorldVertex(int idx) {
     return world_vertices[idx];
 }

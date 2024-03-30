@@ -142,6 +142,7 @@ sf::Vector2f WorldVertex::localizePosition() {
 
 // WorldGraph
 
+// Creates graph based off tiled division scheme
 WorldGraph::WorldGraph(sf::Vector2f screen_size, sf::Vector2f vertex_size, std::vector<sf::Shape*> worldObjects) {
     rows = screen_size.y / vertex_size.y;
     columns = screen_size.x / vertex_size.x;
@@ -172,6 +173,18 @@ WorldGraph::WorldGraph(sf::Vector2f screen_size, sf::Vector2f vertex_size, std::
             }
         }
     }
+}
+
+bool WorldGraph::addEdge(Vertex *from, Vertex *to) {
+    if (from == nullptr || to == nullptr) {
+        return false;
+    }
+    new Edge(from, to, length(from->getPos() - to->getPos()));
+    return true;
+}
+
+bool WorldGraph::addEdge(int from, int to) {
+    return addEdge(getWorldVertex(from), getWorldVertex(to));
 }
 
 WorldVertex* WorldGraph::getWorldVertex(int idx) {
