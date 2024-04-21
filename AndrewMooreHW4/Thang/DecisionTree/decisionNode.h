@@ -1,5 +1,7 @@
 #pragma once
-
+#include "../Graph/graph.h"
+#include "../Kinematic/kinematic.h"
+#include "SFML/Graphics.hpp"
 // Implementation was guided with the class textbook
 
 class DecisionTreeNode {
@@ -9,11 +11,7 @@ class DecisionTreeNode {
         virtual DecisionTreeNode* makeDecision() = 0;  
 };
 
-class Action : public DecisionTreeNode {
-    public:
-        Action();
-        DecisionTreeNode* makeDecision();
-};
+// Decision Start ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Decision : public DecisionTreeNode {
     private:
@@ -21,11 +19,63 @@ class Decision : public DecisionTreeNode {
         DecisionTreeNode* falseNode;
     
     public:
-        Decision();
-        // Defined in subclasses with the appropriate type.
-        virtual auto testValue() = 0;
+        Decision(DecisionTreeNode* trueNode, DecisionTreeNode* falseNode);
         // Perform the test.
         virtual DecisionTreeNode* getBranch() = 0;
         // Recursively walk through the tree.
-        DecisionTreeNode* makeDecision() = 0;
-}
+        DecisionTreeNode* makeDecision();
+};
+
+class NextToWallDecision : public Decision {
+    private:
+        WorldGraph* world;
+        KinematicBody* character;
+    
+    public:
+        NextToWallDecision(DecisionTreeNode* trueNode, DecisionTreeNode* falseNode, WorldGraph* world, KinematicBody* character);
+        // Perform the test.
+        DecisionTreeNode* getBranch();
+};
+
+class InsideObjectDecision : public Decision {
+    private:
+        WorldGraph* world;
+        KinematicBody* character;
+    
+    public:
+        InsideObjectDecision(DecisionTreeNode* trueNode, DecisionTreeNode* falseNode, WorldGraph* world, KinematicBody* character);
+        // Perform the test.
+        DecisionTreeNode* getBranch();
+};
+
+class RandomDecision : public Decision {
+    public:
+        RandomDecision(DecisionTreeNode* trueNode, DecisionTreeNode* falseNode);
+        // Perform the test.
+        DecisionTreeNode* getBranch();
+};
+
+
+// Action Start ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class Action : public DecisionTreeNode {
+    public:
+        Action();
+        DecisionTreeNode* makeDecision();
+};
+
+class DashAction : public Action {
+    public:
+        DashAction();
+};
+
+class WanderAction : public Action {
+    public:
+        WanderAction();
+};
+
+class PathfindAction : public Action {
+    public:
+        sf::Vector2f position;
+        PathfindAction(sf::Vector2f position);
+};
