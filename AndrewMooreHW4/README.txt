@@ -6,6 +6,6 @@ then type "./main" to run the program
 
 close the program by closing the window
 
-Part 1-3: The program will simply run the pathfinding and generation for graphs and output the time it took to run the algorithms as well as the path printed with each entry represented as follows: "fromvertex-distance-tovertex;"
+Part 1-2: The character and monster will take actions based on their respective Decision and Behavior trees
 
-Part 4: The boid will path find to your mouse on click
+I do not have a submission for Part 3.
