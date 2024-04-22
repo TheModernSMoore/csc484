@@ -7,6 +7,9 @@
 #include "Graph/algorithm.h"
 #include "DecisionTree/decisionNode.h"
 
+// This is the dash velocity for the character action
+const float DASH_VEL = 100;
+
 template<typename Base, typename T>
 inline bool instanceof(const T *ptr) {
    return dynamic_cast<const Base*>(ptr) != nullptr;
@@ -32,9 +35,9 @@ int main(int argc, char const *argv[])
         breadcrumbs.push_back(c);
     }
 
-    KinematicBody path_follower(&window, texture, &breadcrumbs);
-    path_follower.setPosition(100, 100);
-    path_follower.linear_pos = sf::Vector2f(100, 100);
+    KinematicBody character(&window, texture, &breadcrumbs);
+    character.setPosition(100, 100);
+    character.linear_pos = sf::Vector2f(100, 100);
 
     std::vector<sf::Shape*> worldObjects;
 
@@ -127,12 +130,12 @@ int main(int argc, char const *argv[])
     // Building the Decision Tree
 
     DashAction dash;
-    WanderAction wander;
+    WanderAction wanderAct;
     PathfindAction topLeft(sf::Vector2f(50, 50));
     PathfindAction bottomLeft(sf::Vector2f(640 - 50, 480 - 50));
 
     RandomDecision randomDecision(&dash, &topLeft);
-    InsideObjectDecision insideDecision(&wander, &bottomLeft);
+    InsideObjectDecision insideDecision(&wanderAct, &bottomLeft);
 
     NextToWallDecision root(&insideDecision, &randomDecision);
     
@@ -151,45 +154,64 @@ int main(int argc, char const *argv[])
                 window.close();
         }
 
+        // Make decision
+
         DecisionTreeNode* action = root.makeDecision();
 
+        SteeringBehavior actionSteering;
+        if (instanceof<DashAction>(action)) {
+            // Set velcity to dash velocity
+            Kinematic dashKinematic;
+            dashKinematic.linear_vel = DASH_VEL;
+            VelMatch velmatch(character, dashKinematic);
+            actionSteering = velmatch.getSteering();
+        } else if (instanceof<WanderAction>(action)) {
+            // Just run a wander action
+            Wander wander(character);
+            actionSteering = wander.getSteering();
+        } else if (instanceof<PathfindAction>(action)) {
+            // IF PATH EXXISTS PTH FLLOW IF NOT MAKE THA PATH
+            
+            // User code below to find pathfind to the position found in this action.
+            PathfindAction* pfa = dynamic_cast<PathfindAction*>(action);
+            // First get the position in the action.
+            goal = worldGraph.quantizePosition(pfa->position);
+            start = worldGraph.quantizePosition(character.getPosition());
+            delete heuristic;
+            heuristic = new EuclideanHeuristic(goal);
+            edge_path = pathfindAStar(&worldGraph, start, goal, heuristic);
+            current_edge = 0;
+        }
 
-        // Make Decision here
-
-        // PUT THIS IN PATHFINDING ACTION
-        // goal = worldGraph.quantizePosition(sf::Vector2f((float)sf::Mouse::getPosition(window).x, (float)sf::Mouse::getPosition(window).y));
-        // start = worldGraph.quantizePosition(path_follower.getPosition());
-        // delete heuristic;
-        // heuristic = new EuclideanHeuristic(goal);
-        // edge_path = pathfindAStar(&worldGraph, start, goal, heuristic);
-        // current_edge = 0;
+        // Below needs to only be called if the path exists, else the character should just be updated with the acitonSteering.
+        // Actually just put it in there buddy
 
         if (current_edge < edge_path.size()) {
             Edge* curr_edge = edge_path[current_edge];
             WorldVertex* curr_vert = (WorldVertex*)curr_edge->getTo();
             path_kinematic.linear_pos = curr_vert->localizePosition();
-            path_kinematic.angular_pos = atan2(path_kinematic.linear_pos.y - path_follower.linear_pos.y, path_kinematic.linear_pos.x - path_follower.linear_pos.x);
-            Arrive arrive(path_follower, path_kinematic);
-            Align align(path_follower, path_kinematic);
+            path_kinematic.angular_pos = atan2(path_kinematic.linear_pos.y - character.linear_pos.y, path_kinematic.linear_pos.x - character.linear_pos.x);
+            Arrive arrive(character, path_kinematic);
+            Align align(character, path_kinematic);
 
             SteeringData steering;
             steering = arrive.getSteering();
             steering += align.getSteering();
 
-            path_follower.update(steering, delta_time);
+            character.update(steering, delta_time);
 
-            if (curr_vert == worldGraph.quantizePosition(path_follower.getPosition())) {
+            if (curr_vert == worldGraph.quantizePosition(character.getPosition())) {
                 current_edge++;
             }
         } else {
-            Arrive arrive(path_follower, path_follower);
-            Align align(path_follower, path_follower);
+            Arrive arrive(character, character);
+            Align align(character, character);
 
             SteeringData steering;
             steering = arrive.getSteering();
             steering += align.getSteering();
 
-            path_follower.update(steering, delta_time);
+            character.update(steering, delta_time);
         }
         
 
@@ -204,7 +226,7 @@ int main(int argc, char const *argv[])
         for(int i = 0; i < worldObjects.size(); i++) {
             window.draw(*(worldObjects[i]));
         }
-        path_follower.draw();
+        character.draw();
 
         // End the current frame and display its contents on screen
         window.display();
